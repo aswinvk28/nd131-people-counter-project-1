@@ -36,6 +36,7 @@ from inference import Network
 from concurrent.futures import ThreadPoolExecutor
 
 import logging
+import threading
 
 from complex_analysis import compute_camera_feed_output
 
@@ -89,7 +90,8 @@ def build_argparser():
 
     parser = ArgumentParser()
     parser.add_argument("-m", help=model_desc, required=True, type=str)
-    parser.add_argument("-i", help=video_desc, required=True, type=str)
+    parser.add_argument("-i", help=video_desc, required=False, type=str)
+    parser.add_argument("-vds", help=video_desc, required=False, type=str)
     parser.add_argument("-l", help=cpu_extension_desc, required=False, type=str,
             default=None)
     parser.add_argument("-d", help=device_desc, type=str, default="CPU")
@@ -100,7 +102,7 @@ def build_argparser():
     parser.add_argument("-bt", "--batch_size", help=batch_size_desc, type=int, default=16)
     parser.add_argument("-mode", "--mode", help=mode_desc, type=str, default='async')
     parser.add_argument("-out", "--output_log", help=mode_desc, type=str, default='main.log')
-    # parser.add_argument("-o", "--output_video", help=mode_desc, type=str, default="output_video.avi")
+    parser.add_argument("-o", "--output_video", help=mode_desc, type=str, default="output_video.avi")
     parser.add_argument("-thr", "--threshold", help=mode_desc, type=float, default=0.4)
     parser.add_argument("-ic", "--is_conf", help="", type=bool, default=False)
     parser.add_argument("-asp", "--aspect", help="", type=bool, default=False)
@@ -236,7 +238,7 @@ def sync_async(infer_network, p_frames, t='sync', request_id=20):
     elif t == "sync":
         infer_network.sync_inference(p_frames[16:])
 
-def infer_on_stream(args, client):
+def infer_on_stream(args, client=None):
     """
     Initialize the inference network, stream video to network,
     and output stats and video.
@@ -245,188 +247,229 @@ def infer_on_stream(args, client):
     :param client: MQTT client
     :return: None
     """
-    # Initialise the class
-    infer_network = Network()
-
-    CPU_EXTENSION = args.l
-
-    def exec_f(l):
-        pass
-
-    infer_network.load_core(args.m, args.d, cpu_extension=CPU_EXTENSION, args=args)
-
-    if "MYRIAD" in args.d:
-        infer_network.feed_custom_layers(args, {'xml_path': args.xp}, exec_f)
-
-    if "CPU" in args.d:
-        infer_network.feed_custom_parameters(args, exec_f)
-
-    infer_network.load_model(args.m, args.d, cpu_extension=CPU_EXTENSION, args=args)
-    # Set Probability threshold for detections
-
-    args = build_argparser().parse_args()
-
-    frames = []
-
-    # b = args.batch_size
-    # args.batch_size = 1
-
-    ### TODO: Load the model through `infer_network` ###
-    infer_network.load_model(args.m, args.d, cpu_extension=args.l, 
-    args=args)
-
     # args.batch_size = b
 
-    ### TODO: Handle the input stream ###
-    cap = cv2.VideoCapture(args.i)
-    cap.open(args.i)
-    width = int(cap.get(3))
-    height = int(cap.get(4))
+    videos = args.vds.split(",")
+    caps = []
+    widths = []
+    heights = []
+    outs = []
 
-    # out = cv2.VideoWriter(args.output_video, 
-    # cv2.VideoWriter_fourcc(*'MJPG'), 30, (width,height))
+    for video in videos:
+        c = cv2.VideoCapture(video)
+        c.open(video)
+        widths.append(int(c.get(3)))
+        heights.append(int(c.get(4)))
+        caps.append(c)
 
-    def call_infer_network(infer_network, frame, args, width, height, request_id, conf=False, threshold=False, aspect=False):
-        if infer_network.wait(request_id=request_id) == 0:
-            frame, thrs, confidences = infer_on_result(infer_network, frame, args, width, height, request_id, 
+    def call_each_video_capture(args, cap, num_index, width, height, output_video):
+
+        # Initialise the class
+        infer_network = Network()
+
+        CPU_EXTENSION = args.l
+
+        def exec_f(l):
+            pass
+
+        infer_network.load_core(args.m, args.d, cpu_extension=CPU_EXTENSION, args=args)
+
+        if "MYRIAD" in args.d:
+            infer_network.feed_custom_layers(args, {'xml_path': args.xp}, exec_f)
+
+        if "CPU" in args.d:
+            infer_network.feed_custom_parameters(args, exec_f)
+
+        infer_network.load_model(args.m, args.d, cpu_extension=CPU_EXTENSION, args=args)
+        # Set Probability threshold for detections
+
+        args = build_argparser().parse_args()
+
+        # b = args.batch_size
+        # args.batch_size = 1
+
+        ### TODO: Load the model through `infer_network` ###
+        infer_network.load_model(args.m, args.d, cpu_extension=args.l, 
+        args=args)
+
+        print(num_index, width, height, output_video)
+        
+        frames = []
+        
+        ### TODO: Handle the input stream ###
+        # cap = cv2.VideoCapture(args.i)
+        # cap.open(args.i)
+        # width = int(cap.get(3))
+        # height = int(cap.get(4))
+
+        if (num_index != 1):
+            out = cv2.VideoWriter(output_video, 
+            cv2.VideoWriter_fourcc(*'MJPG'), 30, (int(width/4),int(height/4)))
+        else:
+            out = cv2.VideoWriter(output_video, 
+            cv2.VideoWriter_fourcc(*'MJPG'), 30, (width,height))
+
+        def call_infer_network(infer_network, frame, args, width, height, request_id, conf=False, threshold=False, aspect=False):
+            if infer_network.wait(request_id=request_id) == 0:
+                frame, thrs, confidences = infer_on_result(infer_network, frame, args, width, height, request_id, 
+                conf=conf, threshold=threshold, aspect=args.aspect)
+            return frame, thrs, confidences
+
+        def call_sync_infer_network(infer_network, frames, args, width, height, request_id, conf=False, threshold=False, aspect=False):
+            frames, thrs, confidences = infer_on_multi_result(infer_network, frames, args, width, height, request_id, 
             conf=conf, threshold=threshold, aspect=args.aspect)
-        return frame, thrs, confidences
+            return frames, thrs, confidences
 
-    def call_sync_infer_network(infer_network, frames, args, width, height, request_id, conf=False, threshold=False, aspect=False):
-        frames, thrs, confidences = infer_on_multi_result(infer_network, frames, args, width, height, request_id, 
-        conf=conf, threshold=threshold, aspect=args.aspect)
-        return frames, thrs, confidences
+        def call_sync_batch_infer_network(ingfer_network, frames, args, width, height, request_id, conf=False, threshold=False, aspect=False):
+            frames, thrs, confidences = infer_on_batch_result(infer_network, frames, args, width, height, request_id, 
+            conf=conf, threshold=threshold, aspect=args.aspect)
+            return frames, thrs, confidences
 
-    def call_sync_batch_infer_network(ingfer_network, frames, args, width, height, request_id, conf=False, threshold=False, aspect=False):
-        frames, thrs, confidences = infer_on_batch_result(infer_network, frames, args, width, height, request_id, 
-        conf=conf, threshold=threshold, aspect=args.aspect)
-        return frames, thrs, confidences
+        def call_sync_async_infer_network(infer_network, frames, args, width, height, request_id, conf=False, threshold=False, aspect=False):
+            for ii, frame in enumerate(frames[0:16]):
+                frame, thrs1, confidences1 = call_infer_network(infer_network, frame, args, width, height, 
+                request_id=ii+request_id, conf=conf, threshold=threshold, aspect=args.aspect)
+                frames[ii] = frame
+            frames[16:], thrs2, confidences2 = call_sync_infer_network(infer_network, frames[16:], args, width, height, 
+            request_id=request_id, conf=conf, threshold=threshold, aspect=args.aspect)
 
-    def call_sync_async_infer_network(infer_network, frames, args, width, height, request_id, conf=False, threshold=False, aspect=False):
-        for ii, frame in enumerate(frames[0:16]):
-            frame, thrs1, confidences1 = call_infer_network(infer_network, frame, args, width, height, 
-            request_id=ii+request_id, conf=conf, threshold=threshold, aspect=args.aspect)
-            frames[ii] = frame
-        frames[16:], thrs2, confidences2 = call_sync_infer_network(infer_network, frames[16:], args, width, height, 
-        request_id=request_id, conf=conf, threshold=threshold, aspect=args.aspect)
+            return frames, np.append(thrs1, thrs2).tolist(), np.append(confidences1, confidences2).tolist()
 
-        return frames, np.append(thrs1, thrs2).tolist(), np.append(confidences1, confidences2).tolist()
+        counter = 1
+        ix = []
+        cx = []
 
-    counter = 0
-    ix = []
-    cx = []
-
-    ### TODO: Loop until stream is over ###
-    while cap.isOpened():
-        
-        ### TODO: Read from the video capture ###
-        ret, frame = cap.read()
-
-        if not ret:
-            break
-
-        if counter == 0:
-            counter += 1
-            continue
-
-        if counter % 2 == 0:
-            counter += 1
-            continue
-
-        # if ((counter % 8) == 0) or ((counter % 4) == 0) or ((counter % 2) == 0) or \
-        #     ((counter % 5) == 0) or ((counter % 6) == 0) or ((counter % 10) == 0) or ((counter % 14) == 0) or ((counter % 16) == 0):
-        #     counter += 1
-        #     continue
-
-        frames.append(frame)
-
-        if (counter) % args.batch_size == 0:
-
-            start_time = time.time()
-            ### TODO: Pre-process the image as needed ###
-            p_frames = []
-
-            for frame in frames:
-                p_frame = preprocessing(frame, infer_network.get_input_shape(), args.grayscale)
-                p_frames.append(p_frame)
+        ### TODO: Loop until stream is over ###
+        while cap.isOpened():
             
-            end_time = time.time()
-            logging.info("""Frame preprocessing time: {t}""".format(t=(end_time - start_time)))
+            ### TODO: Read from the video capture ###
+            ret, frame = cap.read()
 
-            start_time = time.time()
-            ### TODO: Start asynchronous inference for specified request ###
-            # infer_network.sync_inference(p_frames)
-            if args.mode == "async":
-                for ii, p_frame in enumerate(p_frames):
-                    infer_network.async_inference(p_frame, request_id=ii)
-                end_time = time.time()
-            elif args.mode == "sync" or args.mode == "sync_batch":
-                infer_network.sync_inference(p_frames)
-                end_time = time.time()
-            elif args.mode == "sync_async":
-                with ThreadPoolExecutor(max_workers=2) as executor:
-                    for ii in executor.map(sync_async, [infer_network]*2, [p_frames]*2, 
-                    ['sync', 'async'], [5]*2):
-                        pass
-                end_time = time.time()
-            logging.info("""Frame inference time: {t}""".format(t=(end_time - start_time)))
+            if not ret:
+                break
 
-            ### TODO: Wait for the result ###
-            start_time = time.time()
-            if args.mode == "async":
-                for ii, frame in enumerate(frames):
-                    frame, thrs, confidences = call_infer_network(infer_network, 
-                    frame, args, width, height, ii, conf=args.is_conf, 
+            # if counter == 0:
+            #     counter += 1
+            #     continue
+
+            # if counter % 2 == 0:
+            #     counter += 1
+            #     continue
+
+            # if ((counter % 8) == 0) or ((counter % 4) == 0) or ((counter % 2) == 0) or \
+            #     ((counter % 5) == 0) or ((counter % 6) == 0) or ((counter % 10) == 0) or ((counter % 14) == 0) or ((counter % 16) == 0):
+            #     counter += 1
+            #     continue
+
+            frames.append(frame)
+
+            if (counter) % args.batch_size == 0:
+
+                start_time = time.time()
+                ### TODO: Pre-process the image as needed ###
+                p_frames = []
+
+                for frame in frames:
+                    p_frame = preprocessing(frame, infer_network.get_input_shape(), args.grayscale)
+                    p_frames.append(p_frame)
+                
+                end_time = time.time()
+                # logging.info("""Frame preprocessing time: {t}""".format(t=(end_time - start_time)))
+
+                start_time = time.time()
+                ### TODO: Start asynchronous inference for specified request ###
+                # infer_network.sync_inference(p_frames)
+                if args.mode == "async":
+                    for ii, p_frame in enumerate(p_frames):
+                        infer_network.async_inference(p_frame, request_id=ii)
+                    end_time = time.time()
+                elif args.mode == "sync" or args.mode == "sync_batch":
+                    infer_network.sync_inference(p_frames)
+                    end_time = time.time()
+                elif args.mode == "sync_async":
+                    with ThreadPoolExecutor(max_workers=2) as executor:
+                        for ii in executor.map(sync_async, [infer_network]*2, [p_frames]*2, 
+                        ['sync', 'async'], [5]*2):
+                            pass
+                    end_time = time.time()
+                # logging.info("""Frame inference time: {t}""".format(t=(end_time - start_time)))
+
+                ### TODO: Wait for the result ###
+                start_time = time.time()
+                if args.mode == "async":
+                    for ii, frame in enumerate(frames):
+                        frame, thrs, confidences = call_infer_network(infer_network, 
+                        frame, args, width, height, ii, conf=args.is_conf, 
+                        threshold=args.is_threshold, aspect=args.aspect)
+                        frames[ii] = frame
+                elif args.mode == "sync":
+                    frames, thrs, confidences = call_sync_infer_network(infer_network, frames, 
+                    args, width, height, 0, conf=args.is_conf, 
                     threshold=args.is_threshold, aspect=args.aspect)
-                    frames[ii] = frame
-            elif args.mode == "sync":
-                frames, thrs, confidences = call_sync_infer_network(infer_network, frames, 
-                args, width, height, 0, conf=args.is_conf, 
-                threshold=args.is_threshold, aspect=args.aspect)
-            elif args.mode == "sync_batch":
-                frames, thrs, confidences = call_sync_batch_infer_network(infer_network, frames, 
-                args, width, height, 0, conf=args.is_conf, 
-                threshold=args.is_threshold, aspect=args.aspect)
-            elif args.mode == "sync_async":
-                frames, thrs, confidences = call_sync_async_infer_network(infer_network, frames, 
-                args, width, height, 5, conf=args.is_conf, 
-                threshold=args.is_threshold, aspect=args.aspect)
+                elif args.mode == "sync_batch":
+                    frames, thrs, confidences = call_sync_batch_infer_network(infer_network, frames, 
+                    args, width, height, 0, conf=args.is_conf, 
+                    threshold=args.is_threshold, aspect=args.aspect)
+                elif args.mode == "sync_async":
+                    frames, thrs, confidences = call_sync_async_infer_network(infer_network, frames, 
+                    args, width, height, 5, conf=args.is_conf, 
+                    threshold=args.is_threshold, aspect=args.aspect)
 
-            end_time = time.time()
-            # logging.info("""Thresholds count: {t}""".format(t=(np.mean(thrs))))
-            logging.info("""Frame extract time: {t}""".format(t=(end_time - start_time)))
+                end_time = time.time()
+                # logging.info("""Thresholds count: {t}""".format(t=(np.mean(thrs))))
+                # logging.info("""Frame extract time: {t}""".format(t=(end_time - start_time)))
 
-            start_time = time.time()
+                start_time = time.time()
+                
+                if (num_index != 1):
+                    for frame in frames:
+                        frame = cv2.resize(frame, (int(width/4),int(height/4)))
+                        out.write(frame)
+                else:
+                    for frame in frames:
+                        out.write(frame)
+
+                end_time = time.time()
+
+                # logging.info("""Frame paint time: {t}""".format(t=(end_time - start_time)))
+
+                # for frame in frames:
+                #     sys.stdout.buffer.write(frame.astype(np.uint8))
+                #     sys.stdout.flush()
+
+                # client.publish("people", 
+                # json.dumps({ "people": 1 }))
+                
+                frames = []
+
+            counter += 1
             
-            # for frame in frames:
-            #     out.write(frame)
+            ### TODO: Send the frame to the FFMPEG server ###
 
-            end_time = time.time()
+            ### TODO: Write an output image if `single_image_mode` ###
 
-            logging.info("""Frame paint time: {t}""".format(t=(end_time - start_time)))
+        # print("scores: ", ix, "scores mean: ", np.mean(ix))
+        # print("Confidences: ", cx, np.mean(cx))
 
-            for frame in frames:
-                sys.stdout.buffer.write(frame.astype(np.uint8))
-                sys.stdout.flush()
-
-            client.publish("people", 
-            json.dumps({ "people": 1 }))
-            
-            frames = []
-
-        counter += 1
+        if args.output_video:
+            out.release()
         
-        ### TODO: Send the frame to the FFMPEG server ###
+        cap.release()
 
-        ### TODO: Write an output image if `single_image_mode` ###
+    threads = []
+    for num_index, cap in enumerate(caps):
+        t = threading.Thread(target=call_each_video_capture, 
+        args=(args, cap, num_index, widths[num_index], heights[num_index], 
+        str(videos[num_index][::-1][3:][::-1]) + str(num_index) + ".avi"))
+        threads.append(t)
+        t.start()
 
-    # print("scores: ", ix, "scores mean: ", np.mean(ix))
-    # print("Confidences: ", cx, np.mean(cx))
+    for t in threads:
+        t.join()
     
-    cap.release()
     cv2.destroyAllWindows()
     
-    return counter
+    return None
 
 def convert_perf_time(perf_text):
 
@@ -467,9 +510,9 @@ def main():
 
     # logging.basicConfig(filename=args.output_log, filemode='w', level=logging.INFO)
     # Connect to the MQTT server
-    client = connect_mqtt()
+    # client = connect_mqtt()
     # Perform inference on the input stream
-    counter = infer_on_stream(args, client)
+    counter = infer_on_stream(args, None)
 
     # perf_text = open(args.output_log, "r").read()
 
