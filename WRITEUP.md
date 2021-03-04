@@ -1,8 +1,123 @@
+# INTRODUCTION TO THE PROJECT
+
+## PROJECT QUESTIONS
+
+### PROJECT WRITE-UP
+
+Project Instructions: Write-up
+
+Once you have the edge app up and running, you’re not quite finished! You will also create a write-up to help show your understanding of the OpenVINO™ Toolkit and its impact on performance, as well as articulating the use cases of the great application you deployed at the edge.
+
+Answer:
+
+- The write-up is contained within this markdown file
+
+Explain the process behind converting any custom layers. Explain the potential reasons for handling custom layers in a trained model.
+
+Answer:
+
+- The process of converting any custom layers are mentioned under the heading(s):
+
+They are contained within:
+
+**Description Models**
+----------------------
+
+**Description OpenVINO**
+------------------------
+
+**Description Custom Layers (CL)**
+----------------------------------
+
+Run the pre-trained model without the use of the OpenVINO™ Toolkit. Compare the performance of the model with and without the use of the toolkit (size, speed, CPU overhead). What about differences in network needs and costs of using cloud services as opposed to at the edge?
+
+Answer:
+
+- Logs have been created after running the models in several frameworks
+
+- The results are tabulated to report on Inference Time, Size of Model and Model Accuracy
+
+- Intel benchmarking repository have been specifically selected to proceed with the comparison of performance
+
+They are contained within:
+
+**Description Extracted Logs (LOG).**
+-------------------------------------
+
+**Description Accuracy (ACC).**
+-------------------------------
+
+Explain potential use cases of a people counter app, such as in retail applications. This is more than just listing the use cases - explain how they apply to the app, and how they might be useful.
+
+The use cases have been aggregated from my experience, observations from past learning and interaction with the work environment
+
+They are contained within:
+
+**Description Use Cases (CASE).**
+---------------------------------
+
+Discuss lighting, model accuracy, and camera focal length/image size, and the effects these may have on an end user requirement.
+
+**Description End User Needs (END USER NEEDS).**
+------------------------------------------------
+
+If you were unable to find a suitable model and instead used an existing Intel® Pre-Trained Model, you should document the three non-IR models you tried first, how you converted them, and why they failed.
+
+**Description Intel Models (INTEL MODELS).**
+--------------------------------------------
+
+### MINIMUM VIABLE PRODUCT
+
+Minimum Viable Project
+
+While following the project instructions and meeting every rubric requirement is all that is required to pass the project, you should also see that as your MVP - minimum viable project. To make your submission stand out from others, there are a number of ways you can build even further on your People Counter app:
+
+Answer:
+
+My presentation is about how to expose the people counter app as video feed, stats using video augmentation, enable and promote learning of different technologies, touch base on planning and execution as well as demonstrating the qualitative differences while performance is measured using an inference layer vs while it is performed on virtual environments such as the people counter app.
+
+Add an alarm or notification when the app detects above a certain number of people on video, or people are on camera longer than a certain length of time.
+
+Answer:
+
+A time recorded has been running in the demonstration video on workspace.
+
+Try out different models than the People Counter, including a model you have trained. Note that this may require some alterations to what information is passed through MQTT and what would need to be displayed by the UI.
+
+Answer:
+
+Models that have been trained as well as converted have been tried.
+
+Deploy to an IoT device (outside the classroom workspace or your personal computer), such as a Raspberry Pi with Intel® Neural Compute Stick.
+
+Answer:
+
+During the course, I have used NCS2 on Linux Machine with 2nd Gen. Intel Processor.
+
+Add a recognition aspect to your app to be able to tell if a previously counted person returns to the frame. The recognition model could also be processed on a second piece of hardware.
+
+Answer:
+
+This has been addressed statistically, as in the model has been laid out and trained using keras with the converted model processed for performance, accuracy and benchmarking. A demonstration of the results have been provided as a screenshot.
+
+Add a toggle to the UI to shut off the camera feed and show stats only (as well as to toggle the camera feed back on). Show how this affects performance (including network effects) and power.
+
+Answer:
+
+An interface output has been provided by hiding the personal data, the problem lies in providing an additional feature to the app, and I believe 
+
+[https://grafana.com/](https://grafana.com/) Grafana Server is a better option as that has got extensive dashboard tiles which support adding of new features.
+
+These are just a few quick ideas to get you started on further building out your app past the main requirements! Remember, none of these are required.
+
+If you come up with an additional feature you really like, let us know on Twitter @udacity and @IntelSoftware!
+
+**Description Write-Up.**
+-------------------------
+
 # Project Write-Up
 
-You can use this document as a template for providing your project write-up. However, if you
-have a different format you prefer, feel free to use it as long as you answer all required
-questions.
+You can use this document as a template for providing your project write-up. However, if you have a different format you prefer, feel free to use it as long as you answer all required questions.
 
 The project components consist of:
 
@@ -37,27 +152,9 @@ The project components consist of:
 
 ```
 
+**Determines the FPS required for the Application**
+
 - Performance statistics conducted on people counter
-
-  Only Batch of Async Inferences:
-
-  ```bash
-
-  cd student-repositories/nd131-openvino-people-counter-newui/
-
-  python main_file.py -m /home/aswin/Documents/Courses/Udacity/Intel-Edge-Phase2/Projects/People-Counter-App/Repository/Edge-optimized-models/SqueezeNet-5-Class-detection/output_custom/SqueezeNetSSD-5Class.xml -l /opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so -d CPU -pt 0.3 --thickness 2 -i Pedestrian_Detect_2_1_1.mp4  --batch_size 32 --mode async --output_log logs/openvino/main_async.log
-
-  0.5324302993853773
-  FPS:  1.8781801132549596
-
-  cd student-repositories/nd131-openvino-people-counter-newui/
-
-  python main_file.py -m /home/aswin/Documents/Courses/Udacity/Intel-Edge-Phase2/Projects/People-Counter-App/Repository/Edge-optimized-models/SqueezeNet-5-Class-detection/output_custom/SqueezeNetSSD-5Class.xml -l /opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so -d CPU -pt 0.45 --thickness 2 -i Pedestrian_Detect_2_1_1.mp4  --batch_size 1 --mode async --output_log logs/openvino/main_async_1.log --output_video output_video_async_1.avi
-
-  1.055929702186858
-  FPS:  0.9470327408434234
-
-  ```
 
   Only Batch of Input Images:
 
@@ -65,61 +162,163 @@ The project components consist of:
 
   cd student-repositories/nd131-openvino-people-counter-newui/
 
-  python main_file.py -m /home/aswin/Documents/Courses/Udacity/Intel-Edge-Phase2/Projects/People-Counter-App/Repository/Edge-optimized-models/SqueezeNet-5-Class-detection/output_custom/SqueezeNetSSD-5Class.xml -l /opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so -d CPU -pt 0.45 --thickness 2 -i Pedestrian_Detect_2_1_1.mp4  --batch_size 64 --mode sync --output_log logs/openvino/main_ssd.log --output_video output_video_sync.avi
+  python main_file.py -m ./models/person-detector/SqueezeNetSSD-5Class.xml -l /opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so -d CPU -pt 0.45 --thickness 2 -i Pedestrian_Detect_2_1_1.mp4  --batch_size 64 --mode sync --output_log logs/openvino/main_ssd.log --output_video output_video_sync.avi
 
   0.016519666915302468
   FPS:  60.53390816697895
 
   ```
 
-## Directory Structure
+__________________________________________________________________________________
 
-- apps: Include ngrok application for demonstration
+# DIRECTORY STRUCTURE
 
-- certs: openssl certifications for any website authentication and authorization
+- apps: 
 
-- env: initialize the environment
+  - ngrok
 
-- ffmpeg - server config file
+  Include ngrok application for demonstration
 
-- model-repositories: Contains repository for an edge optimized SSD model in caffe as well as IR format
+- certs: 
 
-- models: A repository that contains list of models used for people counter app
+  - certificate.p12
+  - certificate.pem
+  - key.pem
+
+  openssl certifications for any website authentication and authorization
+
+- env: 
+
+  - venv
+  - bashrc_file
+  - requirements.txt
+
+  Initialize the environment
+
+- ffmpeg
+
+  - server.conf
+
+  server config file
+
+- images: Sample images for the README.md
+
+- model-repositories: 
+
+  - SqueezeNetSSD-5Class.prototxt
+
+  Contains repository for an edge optimized SSD model in caffe as well as IR format
+
+- models: 
+
+  - arcface-project
+  - motion-tracking
+  - object-detector
+  - person-detector
+
+  A repository that contains list of models used for people counter app
+
+- resources:
+
+  - Pedestrian_Detect_2_1_1.mp4
 
 - student-repositories: 
 
-                        How the model was trained
+  - arcface-project: How the model was trained
 
-                        Motion Tracking and Optical Flow implementation of the model that can demonstrate the brightness or lightness changes in model accuracy 
+  - motion-tracking: Motion Tracking and Optical Flow implementation of the model that can demonstrate the brightness or lightness changes in model accuracy 
 
-                        ND131 Repository: That contains people counter repository in detail
+  - nd131-openvino-people-counter-newui: ND131 Repository: That contains people counter repository in detail
 
-- webservice: UI and Mosca MQTT Server
+  - test: 
 
-**How to generate the pwople counter video**
+    - inference.py
+    - metrics_face.py
+    - object_detection.py
+    - score.py
+    - test_dnn.py
+    - test_dnn_accuracy.py
+    - test_videoio_inference.py
+    - test_videoio_inference_graph.py
+    - tests_common.py
+
+  - webservice: 
+
+    - server: Mosca MQTT Server
+    - ui: Websocket UI
+  
+__________________________________________________________________________________
+
+**Description Models.**
+-----------------------
+
+# HOW TO GENERATE VIDEOS
+
+**How to generate the people counter video**
 
 ![./video_output.gif](./video_output.gif)
 
 The command line input is optimised for performance and accepts batch size of upto 64 due to several models being taken into consideration.
 
-cd student-repositories/nd131-openvino-people-counter-newui/
-
-python main_file.py -m /home/aswin/Documents/Courses/Udacity/Intel-Edge-Phase2/Projects/People-Counter-App/Repository/Edge-optimized-models/SqueezeNet-5-Class-detection/output_custom/SqueezeNetSSD-5Class.xml -l /opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so -d CPU -pt 0.48 -th 2 -i Pedestrian_Detect_2_1_1.mp4  --batch_size 64 --mode sync --output_log logs/openvino/main_video_demo.log --output_video output_video_sync_video.avi
-
-**How to execute the app**
-
-![./output-video.gif](./output-video.gif)
-
-The command line input takes in batch size of 1, and achieves an inference time of 18 ms.
-
 ```bash
 
   cd student-repositories/nd131-openvino-people-counter-newui/
 
-  python main.py -m "models/person-detector/FP32/SqueezeNetSSD-5Class.xml" -i Pedestrian_Detect_2_1_1.mp4 -d CPU -c BLUE -ct 0.48 -th 1 --batch_size 1 --output_video output_video.avi
+  python main_file.py -m ./models/person-detector/SqueezeNetSSD-5Class.xml -l /opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so -d CPU -pt 0.48 -th 2 -i Pedestrian_Detect_2_1_1.mp4  --batch_size 64 --mode sync --output_log logs/openvino/main_log_ssd.log --output_video output_video_sync_video.avi
 
 ```
 
+  **This is for generating the video based on batch_size = 64 such that identification is done within:**
+
+  - Inference Time = 1.8 ms
+  - People Count = 1 per frame if person present otherwise 0
+  - Person Duration = 0.3522 per batch
+
+__________________________________________________________________________________
+
+# HOW TO EXECUTE
+
+**How to execute the app**
+
+  **This is for generating the video based on batch_size = 1 such that identification is done within:**
+
+![./output_video_1.gif](./output_video_1.gif)
+
+  - Inference Time = 18 ms
+
+**Executes the Application under the Dashboard (threads = 1)**
+
+This command line input takes in batch size of 1, and achieves an inference time of 18 ms.
+
+```bash
+
+  python main.py -m "models/person-detector/FP32/SqueezeNetSSD-5Class.xml" -i Pedestrian_Detect_2_1_1.mp4 -th 2 -ct 0.38 --batch_size 1 --threads 1 | ffmpeg -v warning -f rawvideo -pixel_format bgr24 -video_size 768x432 -framerate 24 -i - http://0.0.0.0:3004/fac.ffm
+
+```
+
+  **This is for generating the video based from the workspace:**
+
+![./output_video_full_view.gif](./output_video_full_view.gif)
+
+_______________________________________________________________________
+
+**Executes the Application under the Dashboard (threads = 2)**
+
+This command line input takes in batch size of 1, and achieves an inference time of 18 ms.
+
+```bash
+
+  python main.py -m "models/person-detector/FP32/SqueezeNetSSD-5Class.xml" -i Pedestrian_Detect_2_1_1.mp4 -th 2 -ct 0.38 --batch_size 1 --threads 2 | ffmpeg -v warning -f rawvideo -pixel_format bgr24 -video_size 768x432 -framerate 24 -i - http://0.0.0.0:3004/fac.ffm
+
+```
+
+  **This is for generating the video based from the workspace (without sharing personal data of the person):**
+
+![./output_video_hidden_view.gif](./output_video_hidden_view.gif)
+
+_____________________________________________________________________________
+
+# CHOICE OF MODELS
 
 ## Reason for the models chosen
 
@@ -127,31 +326,96 @@ The command line input takes in batch size of 1, and achieves an inference time 
 
 ```
 
-        Person Detector is used for bounding box detection when a new person or previous person comes into the frame.
+    Person Detector model is used for bounding box detection when a new person or previous person comes into the frame.
 
-        Object Detector is used to demonstrate the heatmap of the model when a new person or a previous person is in the frame.
+      models/person-detector/SqueezeNetSSD-5Class.xml
 
-        Face Detector is used to include the previously counted person in the frame based on recognizing the person.
+    Object Detector is used to demonstrate the heatmap of the model when a new person or a previous person is in the frame.
+
+      models/object-detector/squeezenet_softmax.xml
+
+    Face Detector is used to include the previously counted person in the frame in the statistics based on facial recognition of a person.
+
+      student-repositories/nd131-openvino-people-counter-newui/models/face_recognizer_lognorm_cl/arcface.xml
+
+      student-repositories/nd131-openvino-people-counter-newui/models/face_recognizer_pnorm_cl/arcface.xml
+
 
 ```
 
-# MODEL OPTIMIZER 
+_____________________________________________________________________________
 
-## Object Detection
+# CHECKING LAYERS FOR SUPPORTED / UNSUPPORTED
 
-### Preprocessing Stage
+```bash
 
-  __Face Detectors use two methods as seen in protos:__
+  cd student-repositories/nd131-openvino-people-counter-newui/network/
+  
+  python feed_network.py -m "../../../models/person-detector/SqueezeNetSSD-5Class.xml" -l /opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so -d CPU --img ../deep_learning_cv/presentation/person/person-detector.png --batch_size 1 --factor 0.01
 
-  #### Face Detection using OpenCV Face Detector
+  (1, 1, 12800, 7)
+  IR successfully loaded into Inference Engine.
+
+```
+
+_____________________________________________________________________________
+
+# MODEL SOURCE
+
+  ## WHERE The OpenCV Face Detector Model was Obtained from
 
   **Link (PB):** [https://raw.githubusercontent.com/opencv/opencv_3rdparty/dnn_samples_face_detector_20180220_uint8/opencv_face_detector_uint8.pb](https://raw.githubusercontent.com/opencv/opencv_3rdparty/dnn_samples_face_detector_20180220_uint8/opencv_face_detector_uint8.pb)
 
   **Link (PBTxt):** [https://raw.githubusercontent.com/opencv/opencv/master/samples/dnn/face_detector/opencv_face_detector.pbtxt](https://raw.githubusercontent.com/opencv/opencv/master/samples/dnn/face_detector/opencv_face_detector.pbtxt)
 
+  ## WHERE The SSD (Single Shot Detector) Model was Obtained from
+
+  **This is not Intel® registered Pre-Trained Model that has got a trademark on it.**
+
+  **Link (Caffe):** [https://github.com/intel/Edge-optimized-models/blob/master/SqueezeNet%205-Class%20detection/SqueezeNetSSD-5Class.caffemodel?raw=true](https://github.com/intel/Edge-optimized-models/blob/master/SqueezeNet%205-Class%20detection/SqueezeNetSSD-5Class.caffemodel?raw=true)
+
+  **Link (ProtoTxt):** [https://raw.githubusercontent.com/intel/Edge-optimized-models/master/SqueezeNet%205-Class%20detection/SqueezeNetSSD-5Class.prototxt](https://raw.githubusercontent.com/intel/Edge-optimized-models/master/SqueezeNet%205-Class%20detection/SqueezeNetSSD-5Class.prototxt)
+
+  ## WHERE The Trained Face Recognition Model was Obtained from
+
+  Originating from this source code repository:
+  [https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/arcface-project](https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/arcface-project)
+
+  ## WHERE The SSD (Single Shot Detector) Model lies in a public repository
+
+  Originating from this source code repository:
+  [https://github.com/intel/Edge-optimized-models](https://github.com/intel/Edge-optimized-models)
+
+  ## WHERE The Heatmap based Object Detector Model was Obtained from
+
+  Originating from this source code repository:
+  [https://github.com/caffe2/models](https://github.com/caffe2/models)
+
+  ## ALL Models lie within this single repository
+
+  The modelS are Originating from this repository:
+  [https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/model_conversion_formats.git](https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/model_conversion_formats.git)
+
+_____________________________________________________________________________
+
+
+# MODEL OPTIMIZER 
+
+The Model Optimizer uses these three models as per the problem statement.
+
+## Object Detection
+
+### Preprocessing Stage
+
+  #### Face Detection using OpenCV Face Detector
+
+  **How to download those pre-trained models**
+
   #### Face Detection using OpenCV Viola-Jones
 
   This is available in Linux and Windows as an XML file and uses OpenCV for detection
+
+_____________________________________________________________________________
 
 ### Pipeline Stage
 
@@ -159,15 +423,20 @@ The command line input takes in batch size of 1, and achieves an inference time 
 
   - SQUEEZENET SSD with OpenVINO
 
-  **Link (Caffe):** [https://github.com/intel/Edge-optimized-models/blob/master/SqueezeNet%205-Class%20detection/SqueezeNetSSD-5Class.caffemodel?raw=true](https://github.com/intel/Edge-optimized-models/blob/master/SqueezeNet%205-Class%20detection/SqueezeNetSSD-5Class.caffemodel?raw=true)
+  **How to download those pre-trained models**
 
-  **Link (ProtoTxt):** [https://raw.githubusercontent.com/intel/Edge-optimized-models/master/SqueezeNet%205-Class%20detection/SqueezeNetSSD-5Class.prototxt](https://raw.githubusercontent.com/intel/Edge-optimized-models/master/SqueezeNet%205-Class%20detection/SqueezeNetSSD-5Class.prototxt)
+_____________________________________________________________________________
+
 
 ### Recognition Aspect
 
   __Face Recognition uses Custom Layers in MYRIAD as well as CPU extension__
 
   [./student-repositories/nd131-openvino-people-counter-newui/objects/functions/protos/people.proto](./student-repositories/nd131-openvino-people-counter-newui/objects/functions/protos/people.proto)
+
+
+  Face Recognition is performed when the person is in view within the camera, the custom layers do play an important part in identifying the person and this is where the software which correctly recognizes the person is flexible enough to match the person attributes. This is essential for categorising the risk for conducting the job of correctly recognizing a person.
+
 
   - ARCFACE (Trained Model)
 
@@ -184,7 +453,7 @@ The command line input takes in batch size of 1, and achieves an inference time 
     }
   ```
 
-  The model has been trained using black and white images as well as color images. 
+  The model(s) has been trained using black and white images as well as color images. 
 
   More details are provided here:
   [./student-repositories/nd131-openvino-people-counter-newui/objects/functions/protos/face.proto](./student-repositories/nd131-openvino-people-counter-newui/objects/functions/protos/face.proto)
@@ -201,42 +470,67 @@ The command line input takes in batch size of 1, and achieves an inference time 
     }
   ```
 
-  When the input image is defined as grayscale, the method used is `LOGNORM` with the VGG8 architecture learning the BatchNorm Layer in keras and when the input image is color, the method used is `PNORM` differentiated by `RISK_RATIO` with the VGG8 architecture learning the AveragePool Layer before prediction. The filters for LOGNORM doubles every layer whereas the PNORM uses a smaller architecture.
+  __PNORM and LOGNORM__
 
-### Model Conversion
+  **The Face recognition task is a trained model by the developer, as per the problem statement. One of the models - `PNORM` is a light-weight model and is trained using color images. The `LOGNORM` model is trained using black and white images.**
+
+  __STOCHASTIC and RISK RATIO__
+
+  **Both the models are used to represent a stochastically determined metric such as an exponential function, and a risk ratio determined metric such as average difference between the ground truth and another observed risk vector of the face.**
+
+_____________________________________________________________________________
+
+
+### How to convert from DL framework to OpenVINO model
 
   __Face Recognition Model converted from Keras__
 
-  Originating from this source code repository:
-  [https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/arcface-project](https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/arcface-project)
-
   ```bash
+
     git clone https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/arcface-project arcface-project
+
   ```
 
   ```bash
+
     cd arcface-project/
+
   ```
 
-## PNORM Model converting to protocol buffer
+
+  __PNORM Model converted to protocol buffer__
+
 
 ```bash
+
   python keras2pb.py --pb_filename arcface.pb --pb_filename_text arcface.pbtxt --folder models/output_pnorm --arch vgg8_arcface_pnorm --num-features 5
+
 ```
 
-### Architecture of PNORM drawn using keras-visualizer
+
+  __Architecture of PNORM drawn using keras-visualizer__
+
 
 ![./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/presentation/models/model_pnorm.png](./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/presentation/models/model_pnorm.png)
 
-### Architecture of LOGNORM drawn using keras-visualizer
+
+  __Architecture of LOGNORM drawn using keras-visualizer__
+
 
 ![./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/presentation/models/model_lognorm.png](./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/presentation/models/model_lognorm.png)
 
-## LOGNORM Model converting to protocol buffer
+
+  __LOGNORM Model converted to protocol buffer__
+
 
 ```bash
+
   python keras2pb.py --pb_filename arcface.pb --pb_filename_text arcface.pbtxt --folder models/output_lognorm --arch vgg8_arcface_lognorm --num-features 5 --visualize_graph 1
+
 ```
+
+_____________________________________________________________________________
+
 
 ### Model Execution Stage
 
@@ -248,9 +542,9 @@ The command line input takes in batch size of 1, and achieves an inference time 
 
   ```bash
 
-    cd student-repositories/nd131-openvino-people-counter-newui/
+  cd student-repositories/nd131-openvino-people-counter-newui/
 
-    python face_detector.py -m "/usr/share/opencv/haarcascades/haarcascade_frontalface_default.xml" -i deep_learning_cv/presentation/face/face-detector-1.png -t "OpenCV-Haar" -c RED -s 1.3 -th 2 -n 5
+  python face_detector.py -m "/usr/share/opencv/haarcascades/haarcascade_frontalface_default.xml" -i deep_learning_cv/presentation/face/face-detector-1.png -t "OpenCV-Haar" -c RED -s 1.3 -th 2 -n 5
 
   ```
 
@@ -258,13 +552,13 @@ The command line input takes in batch size of 1, and achieves an inference time 
 
   - OPENCV_DNN (Deep Neural Network)
 
-```bash
+  ```bash
 
   cd student-repositories/nd131-openvino-people-counter-newui/
 
   python object_detection.py --framework tensorflow --input deep_learning_cv/presentation/face/face-detector-1-3.png --thr 0.65 --model models/opencv_dnn/opencv_face_detector_uint8.pb --backend 3 --target 0 --config models/opencv_dnn/opencv_face_detector.pbtxt
 
-```
+  ```
 
   ![./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/presentation/face/OPENCV_DNN/face-detection-dnn-1-ans.png](./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/presentation/face/OPENCV_DNN/face-detection-dnn-1-ans.png)
 
@@ -272,11 +566,12 @@ The command line input takes in batch size of 1, and achieves an inference time 
 
   ![./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/presentation/face/FACEHASH/frame.png](./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/presentation/face/FACEHASH/frame.png)
 
+
   __Person Detection__
 
   ```bash
 
-    cd /student-repositories/nd131-openvino-people-counter-newui/
+    cd student-repositories/nd131-openvino-people-counter-newui/
 
     python app.py -m "Edge-optimized-models/SqueezeNet-5-Class-detection/FP32/SqueezeNetSSD-5Class.xml" -i deep_learning_cv/presentation/person/person-detector.png -d CPU -c RED -ct 0.48 -th 2
 
@@ -286,39 +581,52 @@ The command line input takes in batch size of 1, and achieves an inference time 
 
   [./student-repositories/nd131-openvino-people-counter-newui/objects/functions/protos/people.proto](./student-repositories/nd131-openvino-people-counter-newui/objects/functions/protos/people.proto)
 
-Conversion to IR Format
------------------------
+_____________________________________________________________________________
+
+**Description OpenVINO.**
+-------------------------
+
+How to convert to IR Format
+---------------------------
 
 ### PNORM Model
 
-```bash
+What I've observed in training this model is it is affecting only 1/2 features by evaluating on different faces. This implies the marginal error between magnitudes of the features can be reduced and that too by reducing the precision of the feature weights. 
+
+**The Model uses Custom layers that are designed using the Model Optimizer only. No CPU extensions are required for this model. The model evaluation metric for extracting the final or almost final layer is an exponential function averaged over decreasing significant digits.**
+
+
+  ```bash
 
   /usr/bin/python3.6 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --data_type "FP32" --tensorflow_object_detection_api_pipeline_config ./models/face_recognizer_pnorm/pipeline.config --tensorflow_use_custom_operations_config ./models/face_recognizer_pnorm/operations.json --input_model ./models/face_recognizer_pnorm/arcface.pb --input_shape "[1,160,160,3]" --input "input_1" --output "batch_normalization_11/cond/Merge" --output_dir ./models/face_recognizer_pnorm_cl/ --extensions ./custom_layers/arcface/cl_pnorm/user_mo_extensions/ --log_level=DEBUG 2>logfile.log
 
-```
+  ```
 
 ### LOGNORM Model
 
-```bash
+The LOGNORM model uses a significance value for the face recognition method. The difference of probability vector is ised to compare against a `zscore` value.
+
+**The Model uses Custom layers that are designed using the Model Optimizer and a CPU extension. The model evaluation function for extracting the final or almost final layer uses a log normal distribution with mean-normalization.**
+
+
+  ```bash
 
   /usr/bin/python3.6 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --data_type "FP32" --tensorflow_object_detection_api_pipeline_config ./models/face_recognizer_lognorm/pipeline.config --tensorflow_use_custom_operations_config ./models/face_recognizer_lognorm/operations.json --input_model ./models/face_recognizer_lognorm/arcface.pb --input_shape "[1,160,160,1]" --input "input_1" --output "dense_1/MatMul" --output_dir ./models/face_recognizer_lognorm_cl/ --extensions ./custom_layers/cl_lognorm/user_mo_extensions/ --log_level=DEBUG 2>loglevel.log
 
-```
+  ```
 
-Conversion to IR Format
------------------------
+_____________________________________________________________________________
+
+
+How to convert to IR Format
+---------------------------
 
   __Person Detector SSD Model converted from CaffeModel__
 
-  Originating from this source code repository:
-  [https://github.com/intel/Edge-optimized-models](https://github.com/intel/Edge-optimized-models)
+  The model has been obtained from github which is using a non-intel model, optimized for SSD and Edge.
 
   ```bash
     git clone https://github.com/intel/Edge-optimized-models edge-optimized-models
-  ```
-
-  ```bash
-    cd "edge-optimized-models/SqueezeNet 5-Class detection/"
   ```
 
   Output files available are:
@@ -328,22 +636,49 @@ Conversion to IR Format
 
   ```bash
 
-  /usr/bin/python3.6 /opt/intel/openvino/deployment_tools/model_optimizer/mo_caffe.py --input_proto ./Edge-optimized-models/SqueezeNet-5-Class-detection/SqueezeNetSSD-5Class.prototxt --input_model ./Edge-optimized-models/SqueezeNet-5-Class-detection/SqueezeNetSSD-5Class.caffemodel --batch 64 --output_dir ./Edge-optimized-models/SqueezeNet-5-Class-detection/output_custom
+  /usr/bin/python3.6 /opt/intel/openvino/deployment_tools/model_optimizer/mo_caffe.py --input_proto ./model-repositories/Edge-optimized-models/SqueezeNet-5-Class-detection/SqueezeNetSSD-5Class_64.prototxt --input_model ./model-repositories/Edge-optimized-models/SqueezeNet-5-Class-detection/SqueezeNetSSD-5Class.caffemodel --batch 64 --output_dir ./Edge-optimized-models/SqueezeNet-5-Class-detection/output_custom
+
+  # Move the files
+  mv ./Edge-optimized-models/SqueezeNet-5-Class-detection/output_custom/*.* ./models/person-detector/
 
   ```
 
-Conversion to IR Format
------------------------
+  ```bash
+
+  /usr/bin/python3.6 /opt/intel/openvino/deployment_tools/model_optimizer/mo_caffe.py --input_proto ./models/person-detector/SqueezeNetSSD-5Class.prototxt --input_model ./models/person-detector/SqueezeNetSSD-5Class.caffemodel --batch 1 --output_dir ./Edge-optimized-models/SqueezeNet-5-Class-detection/output_custom
+
+  ```
+
+_____________________________________________________________________________
+
+
+How to convert to IR Format
+---------------------------
 
   __Object Detector Squeeze Net Softmax Model converted from Caffe2__
 
-  Originating from this source code repository:
-  [https://github.com/caffe2/models](https://github.com/caffe2/models)
+  The SqueezeNet model uses heatmap of size `1000` to differentiate an image. This model is used in case any objects are to be categorised as a common classification category. 
+
+  The Object Detector model did not have any caffe models within version 1, so a version 2 model caffe2 was downloaded and converted to ONNX which was then converted to `.caffemodel`.
+
+  The evidence for evaluating such a model is presented in:
+
+  [./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_face_recognition_aspect-accuracy-check-voc.md](./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_face_recognition_aspect-accuracy-check-voc.md)
+
+  Some of the scores obtained are:
+  4.99741234e+08, 4.99650699e+08, 4.99770734e+08.
+
+  They do show variability, and the video inference gives values of:
+  1000.4341534020593, 1000.5163522355364, 1000.1919143769013
+
+  The model is open for development, and is categorised as a Stand Out task.
 
   To download a caffe2 model locally, run:
 
   ```bash
+
     python -m caffe2.python.models.download squeezenet
+
   ```
 
   The files created are: 
@@ -351,31 +686,38 @@ Conversion to IR Format
   - init_net.pb
   - predict_net.pb
 
-  Those files are then converted to ONNX format to conversion to CaffeModel `.caffemodel`
-
-  Originating from this repository:
-  [https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/model_conversion_formats.git](https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/model_conversion_formats.git)
-
+  Those files are then converted to ONNX format to be converted to the compatible CaffeModel `.caffemodel` for OpenVINO.
 
   ```bash
+
     git clone https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/model_conversion_formats.git model_conversion_formats
+
   ```
 
   ```bash
+
     cd model_conversion_formats/
+
   ```
 
+  __Convert the Caffe2 Model to ONNX__
+
   ```bash
+
     python caffe2ToONNX.py --predict_net predict_net.pb --init_net init_net.pb --predict_net_name squeezenet --init_net_name squeezenet --onnx_file squeezenet_softmax.onnx
+
   ```
 
   Output files created are:
 
   - squeezenet_softmax.onnx
 
+  __Convert the ONNX Model to prototxt and CaffeModel Version 1__
 
   ```bash
+
     python onnx2caffe/convertCaffe.py [onnx_path="squeezenet_softmax.onnx"] [prototxt_path="squeezenet_softmax.prototxt"] [caffemodel_path="squeezenet_softmax.caffemodel"] 
+
   ```
 
   Output files created are:
@@ -389,34 +731,48 @@ Conversion to IR Format
 
   ```
 
-## Explaining Custom Layers
+_____________________________________________________________________________
+
+**Description Custom Layers (CL).**
+-----------------------------------
+
+# EXPLAINING CUSTOM LAYERS
 
 The process behind converting custom layers involves...
 
 ### Creating a Custom layer (PNORM)
 
-PNORM is a custom layer where the rounding operation of exponential activation function applied on the fully connected layer, is approximated to project 2 features. 
+PNORM is a custom layer where the rounding operation of exponentially activated function applied on the fully connected layer, is approximated to project only 2 features. 
 
 Using brightness, the feature values are compared against the accuracy of the face recognition model.
 
-```bash
+  __How to generate the extension__
+
+  ```bash
 
   python /opt/intel/openvino/deployment_tools/tools/extension_generator/extgen.py new --mo-tf-ext --mo-op --ie-cpu-ext --ie-gpu-ext --output_dir=./custom_layers/arcface/cl_pnorm
 
-```
+  ```
 
   Output files created are:
 
   - user_ie_extensions
   - user_mo_extensions
 
-```bash
+How to convert to IR format
+---------------------------
+
+  __Creating the Custom Layer__
+
+  ```bash
 
   /usr/bin/python3.6 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --data_type "FP32" --tensorflow_object_detection_api_pipeline_config ./models/face_recognizer_pnorm/pipeline.config --tensorflow_use_custom_operations_config ./models/face_recognizer_pnorm/operations.json --input_model ./models/face_recognizer_pnorm/arcface.pb --input_shape "[1,160,160,3]" --input "input_1" --output "batch_normalization_11/cond/Merge" --output_dir ./models/face_recognizer_pnorm_cl/ --extensions ./custom_layers/arcface/cl_pnorm/user_mo_extensions/ --log_level=DEBUG 2>logfile.log
 
-```
+  ```
 
-```bash
+  __Creating the CPU Extension__
+
+  ```bash
 
   cd /home/aswin/Documents/Courses/Udacity/Intel-Edge-Phase2/Projects/People-Counter-App/Repository/nd131-openvino-people-counter-newui/custom_layers/cl_lognorm/user_ie_extensions/cpu/build
 
@@ -424,7 +780,10 @@ Using brightness, the feature values are compared against the accuracy of the fa
 
   make all
 
-```
+  ```
+
+_____________________________________________________________________________
+
 
 ### Creating a Custom layer (LOGNORM)
 
@@ -441,13 +800,20 @@ LOGNORM is a custom layer where the downscaled inputs to fullyconnected layer is
   - user_ie_extensions
   - user_mo_extensions
 
-```bash
+How to convert to IR format
+---------------------------
+
+  __Creating the Custom Layer__
+
+  ```bash
 
   /usr/bin/python3.6 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --data_type "FP32" --tensorflow_object_detection_api_pipeline_config ./models/face_recognizer_lognorm/pipeline.config --tensorflow_use_custom_operations_config ./models/face_recognizer_lognorm/operations.json --input_model ./models/face_recognizer_lognorm/arcface.pb --input_shape "[1,160,160,1]" --input "input_1" --output "batch_normalization_11/cond/Merge" --output_dir ./models/face_recognizer_lognorm_cl/ --extensions ./custom_layers/cl_lognorm/user_mo_extensions/ --log_level=DEBUG 2>logfile.log
 
-```
+  ```
 
-```bash
+  __Creating the CPU Extension__
+
+  ```bash
 
   cd /home/aswin/Documents/Courses/Udacity/Intel-Edge-Phase2/Projects/People-Counter-App/Repository/nd131-openvino-people-counter-newui/custom_layers/cl_pnorm/user_ie_extensions/cpu/build
 
@@ -455,7 +821,10 @@ LOGNORM is a custom layer where the downscaled inputs to fullyconnected layer is
 
   make all
 
-```
+  ```
+
+_____________________________________________________________________________
+
 
 **Some of the potential reasons for handling custom layers are...**
 
@@ -493,12 +862,17 @@ LOGNORM is a custom layer where the downscaled inputs to fullyconnected layer is
   In ONNX and Keras, new layers are configured
   ```
 
-## Comparing Model Performance
+_____________________________________________________________________________
+
+**Description Performance (PERF).**
+-----------------------------------
+
+# COMPARING MODEL PERFORMANCE
 
 My method(s) to compare models before and after conversion to Intermediate Representations
 were...
 
-# DATASETS
+## DATASETS
 
 I decided to use a common tfrecord[.record] dataset for:
 
@@ -510,33 +884,49 @@ I decided to use a common tfrecord[.record] dataset for:
 
 
 
-Summary of the dataset is as follows:
+__Summary of the dataset is as follows:__
 
-​	**Validating now..., Records:  2008**
+  ​	**Validating now..., Records:  2008**
 
-​	**Num of people:  5447**
+  ​	**Num of people:  5447**
 
 
 
 For the dataset I used Pascal **VOC2007** dataset with these details:
 
+  __File that contains Person images to be trained__
+
   [./student-repositories/nd131-openvino-people-counter-newui/formats/person_trainval_cmd.txt](./student-repositories/nd131-openvino-people-counter-newui/formats/person_trainval_cmd.txt) was modified to reflect the pandas format.
+
+
+  __File that stores data and metadata such as bounding boxes and binary images in 1 single tfrecord file__
+
 
   [./student-repositories/nd131-openvino-people-counter-newui/formats/tfrecord-voc.record](./student-repositories/nd131-openvino-people-counter-newui/formats/tfrecord-voc.record) tfrecord written VOC
 
+
   ```bash
+
     git clone https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/tf-object_detection tf-object_detection
+
   ```
 
   ```bash
+
     cd tf-object_detection/
+
   ```
 
   Output files created are:
 
   - tfrecord-voc.record
 
+
   The annotations are saved in the annotations folder.
+
+
+  __How to create tf record annotations__
+
 
   ```bash
 
@@ -544,31 +934,44 @@ For the dataset I used Pascal **VOC2007** dataset with these details:
 
   ```
 
+_____________________________________________________________________________
+
+**Description Accuracy (ACC).**
+-------------------------------
+
 # ACCURACY AND MODEL PERFORMANCE
 
   For reporting on accuracy of the models and performance, I decided to use `intelai/models` repository
 
   ```bash
+
     git clone https://github.com/Intel-OpenVINO-Edge-AI-Scholarship/intelai-models-benchmarking
+
   ```
 
   ```bash
+
     cd intelai-models-benchmarking/benchmark/
+
   ```
 
   Execute the benchmarking app
 
   ```bash
+
     python launch_benchmark.py --output-dir=./tensorflow_object_detection_create_coco_tfrecord -mo=inference --data-location=./pascal_voc_tfrecord/tfrecord-voc.record [-rd=0.5] --in-graph=./models/{model_folder}/{model_name}[`.prototxt`,`.hdf5`] --in-weights=./models/{model_folder}/{model_name}[`.caffemodel`] -v --framework=[`caffe`,`keras`] --p=fp32 -m=[`detection_softmax`,`face_recognition_aspect`, `ssd_squeezenet`] -r=./models/{model_folder} --num-inter-threads=1 --num-intra-threads=1 [`--benchmark-only`,`--accuracy-only`] --batch_size=1 --annotations_dir=./annotations/VOCtrainval_06-Nov-2007/VOCdevkit/VOC2007/JPEGImages 2>&1 | tee [`./formats/benchmark_person_detection-voc.log`, `./formats/benchmark_face_recognition_aspect-voc.log`, 
     `./formats/benchmark_object_detection-voc.log`]
+
   ```
 
+_____________________________________________________________________________
+
+**Description Tabulated Results (TAB).**
+----------------------------------------
 
 ## Without the use of OpenVINO
 
 ### Face Recognition Keras ArcFace Model
-
-__Benchmarking using Intel-AI/models__
 
 **The difference between model accuracy pre- and post-conversion was...**
 
@@ -599,50 +1002,66 @@ __Benchmarking using Intel-AI/models__
 | Model Accuracy      |   0.5031695507549447  |     4.799718069103953e-08  |  0.5031695028  |
 
 
-```bash
+  __FACE DETECTOR used as a preprocessing model for face recognition__
+
+  This OpenCV tensorflow model is used because it shows high performance when compared to the OpenCV Viola-Jones model.
+
+  __Model Scores__
+
+  ```bash
 
   numactl --cpunodebind=0 --membind=0 python test_videoio_inference_graph.py --input_weights models/output_lognorm/model_sm.hdf5 --batch_size 1 --callback test_lognorm_model --method lognorm --face_detector_weights models/opencv_dnn/opencv_face_detector_uint8.pb --face_detector_model "models/opencv_dnn/opencv_face_detector.pbtxt" --name face_detector
 
-```
+  ```
 
-```bash
+  __Memory Consumption and Model Size for LOGNORM__
+
+  ```bash
 
   python test_dnn_accuracy.py test_lognorm_model
 
-```
+  ```
 
-```bash
+  __Memory Consumption and Model Size for SOFTMAX DETECTION__
+
+  ```bash
 
   python modules/dnn/misc/python/test/test_dnn_accuracy.py test_perf_detection_softmax_model
 
-```
+  ```
 
-__CPU Overhead__
+  __CPU Overhead__
 
-```bash
+  ```bash
+
   numastat -p /usr/bin/python3.6 logs/keras/numalog.log
-```
 
-__Model Stat__
+  ```
 
-```bash
+  __Model Stat__
+
+  ```bash
+
   h5stat -Ss -f ./models/{model_name}/model_sm[`.hdf5`]
-```
 
-__Video performance__
+  ```
 
-```bash
+  __Video performance using OpenCV__
+
+  ```bash
 
   python test_videoio_inference.py --input_graph dnn/layers/squeezenet_softmax_64.prototxt --input_weights dnn/layers/squeezenet_softmax.caffemodel --batch_size 64 --input_file ./Pedestrian_Detect_2_1_1.mp4 --name videoio_caffe --callback test_video 2> logs/keras/network.log
 
-```
+  ```
+
+_____________________________________________________________________________
 
 
 ### Object Detection Model
 
-__Benchmarking using OpenCV__
+  __Benchmarking using OpenCV__
 
-**The difference between model accuracy pre- and post-conversion was...**
+  **The difference between model accuracy pre- and post-conversion was...**
 
 
                     OBJECT DETECTION (SQUEEZENET SOFTMAX)
@@ -658,22 +1077,34 @@ __Benchmarking using OpenCV__
 |    Avg Threshold   |                       |                           |                |
 
 
-```bash
+  __Performance of SqueezeNet Softmax__
+
+  ```bash
+
   export OPENCV_TEST_DATA_PATH=./modules/dnn/misc/python/test
   ./bin/opencv_perf_dnn --gtest_filter="*SqueezeSoftmaxNetCaffe2*
-```
 
-__A custom test script on accuracy of DNNs for the softmax model__
+  ```
 
-```bash
+  <!---
+
+  __A custom test script on accuracy of DNNs for the softmax model__
+
+  ```bash
+
   python modules/dnn/misc/python/test/test_dnn_accuracy.py test_detection_softmax_model
-```
 
-In calculating the accuracy, the difference between true prediction probability and noised prediction probability is evaluated.
+  ```
 
-Average values obtained on iterating over 10 times and incrementing the pixel value randomly by 0 or 1, using `np.random.randint(0,2,frame.shape),0,255).astype(np.uint8)`
+  --->
 
-**Average Values = 0.011554382729999998**
+  In calculating the accuracy, the difference between true prediction probability and noised prediction probability is evaluated.
+
+  Average values obtained on iterating over 10 times and incrementing the pixel value randomly by 0 or 1, using `np.random.randint(0,2,frame.shape),0,255).astype(np.uint8)`
+
+  **Average Values = 0.011554382729999998**
+
+<!---
 
 ```log
 
@@ -690,41 +1121,52 @@ Average values obtained on iterating over 10 times and incrementing the pixel va
 
 ```
 
-__A custom test script on performance of DNNs for the softmax model__
+--->
 
-```bash
+  __A custom test script on performance of DNNs for the softmax model__
+
+  ```bash
+
   python modules/dnn/misc/python/test/test_dnn_accuracy.py test_perf_detection_softmax_model
-```
 
-In calculating the memory consumption, the weights are evaluated with the GFlops.
+  ```
 
-```log
+  In calculating the memory consumption, the weights are evaluated with the GFlops.
+
+  ```log
 
   Memory consumption:
     Weights(parameters):  5.713042259216309  Mb
     Blobs:  28.459837913513184  Mb
   Calculation complexity:  0.70646016  GFlops
 
-```
+  ```
 
-__CPU Overhead__
+  __CPU Overhead__
 
-```bash
+  ```bash
+
   numastat -p /usr/bin/python3.6 > logs/softmax/numalog.log
-```
 
-__Video performance__
+  ```
 
-```bash
+  __Video performance__
+
+  ```bash
+
   # tests on caffe module
   /usr/bin/python3.6 -c "import caffe"
 
   /usr/bin/python3.6 test_videoio_inference.py --input_graph dnn/layers/squeezenet_softmax_64.prototxt --input_weights dnn/layers/squeezenet_softmax.caffemodel --batch_size 64 --input_file ./Pedestrian_Detect_2_1_1.mp4 --name videoio_caffe --callback test_video 2> logs/softmax/network.log
-```
+
+  ```
+
+_____________________________________________________________________________
+
 
 ### Person Detection Model
 
-__Bench-marking using OpenCV__
+__Benchmarking using Intel-AI/models__
 
 
                 PERSON DETECTION (SQUEEZENET EDGE OPTIMIZED)
@@ -745,55 +1187,70 @@ __Bench-marking using OpenCV__
 |                           | detection_accuracy: 3.38%|detection_accuracy: 3.38%|        0       |
 
 
-```bash
+  __Bench-marking using OpenCV__
+
+  ```bash
+
   git clone https://github.com/opencv/opencv opencv-repo
   cd opencv-repo/
   ./opencv_perf_dnn --gtest-filter="*SqueezeNetSSDEdgeOptimized*"
-```
 
-__A custom test script on accuracy of DNNs for the SSD model__
+  ```
 
-```bash
+  __A custom test script on accuracy of DNNs for the SSD model__
+
+  ```bash
+
   python modules/dnn/misc/python/test/test_dnn_accuracy.py test_ssd_model
-```
 
-The accuracy of the SSD model is equated to the Confidence Threshold.
+  ```
 
-```log
+  The accuracy of the SSD model is equated to the Confidence Threshold.
+
+  ```log
 
   Accuracy / Min. Confidence threshold = 0.48147756
 
-```
+  ```
 
 ![./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/prediction/person/accuracy-tested-person-detector.png](./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/prediction/person/accuracy-tested-person-detector.png)
 
 
-__A custom test script on performance of DNNs for the SSD model__
+  __A custom test script on performance of DNNs for the SSD model__
 
-```bash
+  ```bash
+
   python modules/dnn/misc/python/test/test_dnn_accuracy.py test_perf_ssd_model
-```
 
-```log
+  ```
+
+  ```log
 
   Memory consumption:
     Weights(parameters):  12.975508689880371  Mb
     Blobs:  52.214980125427246  Mb
   Calculation complexity:  2.212587355  GFlops
 
-```
+  ```
 
-__CPU Overhead__
+  __CPU Overhead__
 
-```bash
+  ```bash
+
   numastat -p /usr/bin/python3.6 > logs/ssd/numalog.log
-```
 
-__Video performance__
+  ```
 
-```bash
+  __Video performance__
+
+  ```bash
+
   numactl --cpunodebind=0 --membind=0 /usr/bin/python3.6 test_videoio_inference.py --input_graph dnn/SqueezeNetSSD-5Class_64.prototxt --input_weights dnn/SqueezeNetSSD-5Class.caffemodel --batch_size 64 --input_file ./Pedestrian_Detect_2_1_1.mp4 --name videoio_caffe --callback test_video 2> logs/ssd/network.log
-```
+
+  ```
+
+_____________________________________________________________________________
+
 
 ## Using OpenVINO
 
@@ -838,7 +1295,7 @@ __BENCHMARK__
     
     
                         OBJECT DETECTION (SQUEEZENET SOFTMAX)
-    
+
   Model:
 
   - model_folder = person_detect
@@ -851,6 +1308,8 @@ __BENCHMARK__
 
   - model_folder = object_detect
   - model_name = SqueezeNetSSD-5Class[.xml]
+
+_____________________________________________________________________________
 
 
 **The size of the model pre- and post-conversion was...**
@@ -925,107 +1384,10 @@ __SSD Edge Optimized__
 
 ```
 
-## With/Without the use of OpenVINO
+_____________________________________________________________________________
 
-__File Stat__
-
-```bash
-  fiwalk SqueezeNetSSD-5Class.caffemodel -1 -M -m -Aoutput.xml
-```
-
-```bash
-  fiwalk SqueezeNetSSD-5Class.xml -1 -M -m -Aoutput.xml
-  fiwalk SqueezeNetSSD-5Class.bin -1 -M -m -Boutput.xml
-```
-
-__File Stat__
-
-```bash
-  fiwalk squeezenet_softmax.caffemodel -1 -M -m -Aoutput.xml
-```
-
-```bash
-  fiwalk squeezenet_softmax.xml -1 -M -m -Aoutput.xml
-  fiwalk squeezenet_softmax.bin -1 -M -m -Boutput.xml
-```
-
-__File Stat__
-
-```bash
-  fiwalk model_lognorm/model_sm.hdf5 -1 -M -m -Aoutput.xml
-
-  image_filename: arcface-project/lognorm/model_sm.hdf5
-  fiwalk_version: 4.4.2
-  start_time: Mon Jun 22 11:54:22 2020
-  tsk_version: 4.4.2
-
-  maxrss: 10052
-  minflt: 651
-  majflt: 17
-  nswap: 0
-  inblock: 4648
-
-```
-
-```bash
-  fiwalk model_lognorm/arcface.xml -1 -M -m -Aoutput.xml
-
-  maxrss: 10952
-  minflt: 713
-  majflt: 0
-  nswap: 0
-  inblock: 0
-  oublock: 0
-
-  fiwalk model_lognorm/arcface.bin -1 -M -m -Boutput.xml
-
-  maxrss: 10964
-  minflt: 712
-  majflt: 0
-  nswap: 0
-  inblock: 0
-  oublock: 0
-```
-
-__File Stat__
-
-```bash
-  fiwalk model_pnorm/model_sm.hdf5 -1 -M -m -Aoutput.xml
-
-  maxrss: 10972
-  minflt: 711
-  majflt: 0
-  nswap: 0
-  inblock: 1696
-  oublock: 0
-```
-
-```bash
-  fiwalk model_pnorm/arcface.xml -1 -M -m -Aoutput.xml
-
-  maxrss: 11040
-  minflt: 712
-  majflt: 0
-  nswap: 0
-  inblock: 0
-  oublock: 0
-
-  fiwalk model_pnorm/arcface.bin -1 -M -m -Boutput.xml
-
-  maxrss: 10916
-  minflt: 713
-  majflt: 0
-  nswap: 0
-  inblock: 0
-  oublock: 0
-
-```
-
-```bash
-
-  python -m models/{model_folder}/{model_name}[`.caffemodel`, `.hdf5`]
-
-```
+**Description Extracted Logs (LOG).**
+-------------------------------------
 
 ## Without the use of OpenVINO
 
@@ -1034,7 +1396,7 @@ __File Stat__
 The log file that contains the details
 [./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_face_recognition_aspect-voc.md](./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_face_recognition_aspect-voc.md)
 
-```log
+  ```log
 
   1/1 [==============================] - 0s 17ms/step
   Batchsize: 1
@@ -1060,14 +1422,17 @@ The log file that contains the details
   Total samples/sec:    43.1199 samples/s
   Total labeled samples: 1 person
 
-```
+  ```
+
+_____________________________________________________________________________
+
 
 # [OBJECT / PERSON] DETECTOR [SQUEEZENET SOFTMAX / SQUEEZENET SSD EDGE OPTIMIZED]
 
 The log file that contains the details
 [./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_object_detection-voc.md](./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_object_detection-voc.md)
 
-```log
+  ```log
 
   (1, 3, 224, 224)
   Batchsize: 1
@@ -1091,12 +1456,12 @@ The log file that contains the details
   Total samples/sec:     7.0780 samples/s
   Total labeled samples: 1 person
 
-```
+  ```
 
 The log file that contains the details
 [./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_person_detection-voc.md](./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_person_detection-voc.md)
 
-```log
+  ```log
 
   Batchsize: 1
   Time spent per BATCH:     5.8722 ms
@@ -1116,18 +1481,24 @@ The log file that contains the details
   Total samples/sec:   170.2405 samples/s
   Total labeled samples: 1 person
 
-```
+  ```
+
+_____________________________________________________________________________
+
 
 ACCURACY
 --------
 
 __Convert Annotations from Pascal VOC2007__
 
-```bash
+  ```bash
 
   python /opt/intel/openvino/deployment_tools/tools/accuracy_checker_tool/convert_annotation.py voc_detection --imageset_file /home/aswin/Documents/Courses/Udacity/Intel-Edge/Repository/caffe2-pose-estimation/annotations/VOCtrainval_06-Nov-2007/VOCdevkit/VOC2007/ImageSets/Main/person_trainval_imgsets_data.txt --annotations_dir /home/aswin/Documents/Courses/Udacity/Intel-Edge/Repository/caffe2-pose-estimation/annotations/VOCtrainval_06-Nov-2007/VOCdevkit/VOC2007/Annotations --images_dir /home/aswin/Documents/Courses/Udacity/Intel-Edge/Repository/caffe2-pose-estimation/annotations/VOCtrainval_06-Nov-2007/VOCdevkit/VOC2007/JPEGImages/ --output_dir ./output
 
-```
+  ```
+
+_____________________________________________________________________________
+
 
 # FACE RECOGNITION
 
@@ -1138,14 +1509,15 @@ __Convert Annotations from Pascal VOC2007__
   The log file that contains the details
   [./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_face_recognition_aspect-accuracy-check-voc.md](./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_face_recognition_aspect-accuracy-check-voc.md)
 
+
   ## Image Augmentation
 
                                             IMAGE
                                           ---------
-
+    
                   FLIPPING THE IMAGE                      ROTATING THE IMAGE
                   ------------------                      ------------------
-
+    
               Flip the image horizontally               Rotate the image by 8°
 
   ```yaml
@@ -1313,6 +1685,8 @@ __Convert Annotations from Pascal VOC2007__
 
   The risk vectors are loaded from a database and there will not be any observable difference in the performance while switch off or switch on of camera feed. 
 
+_____________________________________________________________________________
+
 
 # PERSON DETECTION
 
@@ -1391,6 +1765,9 @@ __Convert Annotations from Pascal VOC2007__
   ```
 -->
 
+_____________________________________________________________________________
+
+
 # OBJECT DETECTION
 
   __Accuracy__
@@ -1399,7 +1776,7 @@ __Convert Annotations from Pascal VOC2007__
 
   The log file that contains the details
   [./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_detection_softmax-accuracy-check-voc.md](./student-repositories/nd131-openvino-people-counter-newui/formats/benchmark_detection_softmax-accuracy-check-voc.md)
-  
+
   ```yaml
 
     DetectionBoxes_Precision/mAP: 1.0
@@ -1500,13 +1877,20 @@ __Convert Annotations from Pascal VOC2007__
 
 -->
 
-```bash
+  ## HOW TO MEASURE ACCURACY USING VIDEO INFERENCE
+
+  ```bash
 
   python modules/dnn/misc/python/test/test_videoio_inference_graph.py -m models/{model_folder}/{model_name}[`.caffemodel`, `.hdf5`] -mo "inference" --framework ["caffe", "keras"]
 
-```
+  ```
 
-## Assess Model Use Cases
+_____________________________________________________________________________
+
+**Description Use Cases (CASE).**
+---------------------------------
+
+# ASSESS MODEL USE CASES
 
 Some of the potential use cases of the people counter app are...
 
@@ -1588,12 +1972,17 @@ Each of these use cases would be useful because...
 
   (2) the people characteristics model that records the gender and predicted age from input frame. This one uses intel model on `age-gender-recognition-retail-0013`. 
 
-## Assess Effects on End User Needs
+_____________________________________________________________________________
+
+**Description End User Needs (END USER NEEDS).**
+------------------------------------------------
+
+# ASSESS EFFECTS ON END USER NEEDS
 
 Lighting, model accuracy, and camera focal length/image size have different effects on a
 deployed edge model. The potential effects of each of these are as follows...
 
-__Lighting__
+  __Lighting__
 
   The lighting and or brightness affects the model accuracy in many ways. The decrease or increase in lighting falls back the confidence interval in prediction which reduces the rate of detection of people as well as count of people monitoried in a camera feed.
 
@@ -1603,29 +1992,35 @@ __Lighting__
 
   Let's represent the image in terms of floating points, on decreasing the brightness, the ratio turns out to be:
 
-```mathematica
+  ```mathematica
+
   (P1 - 10x)  
   ------------
   (Pmax - 10x) 
-```
+
+  ```
 
   where x is a positive factor. This is a relevance ratio to the model's activation of neurons. Otherwise termed as a DEA (Data Envelopment Analysis) model as the ratio of weighted sums with lesser statistical efficiency. If you derive the change in numerator vs change in denominator, 
 
-```mathematica
+  ```mathematica
+
   Δw
   ---
   Δx 
-```
+
+  ```
 
   it will be:
 
   negatively dependent on Pmax with the factor: 
 
-```mathematica
+  ```mathematica
+
   -1 * Pmax * ( x1 )
              -------
               ( x )
-```
+
+  ```
 
   As the ratio increases due to increase in lighting, the confidence level in prediction decreases drastically because the neural network shows a disparity in prediction as the variable Pmax (which is our denominator) is higher for large brightness. 
 
@@ -1635,9 +2030,14 @@ __Lighting__
 
   ![./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/presentation/person/person-detector-light-ssd.png](./student-repositories/nd131-openvino-people-counter-newui/deep_learning_cv/presentation/person/person-detector-light-ssd.png)
 
-__Model Accuracy__
+  __Model Accuracy__
 
   The accuracy of the model affects the statistical significance, confidence interval in detection of people.
+
+_____________________________________________________________________________
+
+**Description Intel Models (INTEL MODELS).**
+--------------------------------------------
 
 #### On Models
 
@@ -1647,8 +2047,11 @@ __Model Accuracy__
 
 ## Model Research
 
-[This heading is only required if a suitable model was not found after trying out at least three
-different models. However, you may also use this heading to detail how you converted 
-a successful model.]
-
 **I got all non intel models and was able to successfully convert all to OpenVINO models**
+
+The models I used were:
+
+(1) Person Detector, an SSD Model
+(2) Object Detector, a heatmap based Model
+(3) Face Recognition, a trained model as per the requirement
+(4) Face Detector, a bounding box model
